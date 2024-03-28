@@ -1,0 +1,148 @@
+/* Modal */
+.modal-xl {
+    max-width: 75%;
+}
+
+.modal-content {
+   /*background-color: #242727 ;*/
+   background-color: #1F2327 ;
+}
+
+.modal-body {
+    max-height: 441px;
+    overflow-y: auto;
+}
+
+.modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background-color: transparent; 
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    border-radius: 25px;
+    background-color: #99A3A4;
+}
+
+.close {   
+    background-color: transparent;
+    color: white;
+}
+
+.close:hover {
+    cursor: pointer;
+}
+
+.close:focus {
+    outline: none;
+}
+
+
+
+/* Botones de Opciones */
+.btnOpcion {   
+    background-color: transparent;
+    color: white;
+}
+
+.btnOpcion:hover {
+    cursor: pointer;
+}
+
+.btnOpcion:focus {
+    outline: none;
+}
+
+.dropdown-menu {
+    background-color: #343a40; 
+}
+  
+.dropdown-item:hover {
+    background-color: #495057;
+    cursor: pointer;
+}
+
+.dropdown-item:focus {
+    outline: none;
+}
+
+/* Pestañas */
+.btnTab {
+    border: none;
+    width: 86%;
+    background-color: transparent;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.btnTab:focus {
+    outline: none;
+}
+
+.btnDel {
+    width: 14%;
+    border-radius: 15px;
+    display: inline-block; 
+    text-align: center; 
+}
+
+.btnDel:hover {
+    background-color: #343a40;
+    color: red;
+}
+
+/* Numeracion */
+.containerNumberLine {
+    border-right: 1px solid #343a40;
+    background-color: #1F2326;
+}
+
+/* Contenedo de consola */
+.containerConsole {
+    height: 505px;
+    overflow: auto;
+    background-color: #343a40;
+}
+
+.containerConsole::-webkit-scrollbar {
+    width: 8px;
+}
+
+.containerConsole::-webkit-scrollbar-track {
+    background-color: transparent; 
+}
+
+.containerConsole::-webkit-scrollbar-thumb {
+    border-radius: 25px;
+    background-color: #99A3A4;
+}
+
+/* Consolas */
+textarea {
+    width: 100%;
+    resize: none;
+    border: none;
+    background-color: #343a40;
+    color:white;
+    overflow-y: hidden;
+    overflow-x: auto;
+    font-family: monospace;
+    white-space: pre;
+}
+
+textarea:focus {
+    outline: none;
+}
+
+textarea::-webkit-scrollbar {
+    height: 0px;
+}
+
+/* boton Subir */
+
+#btnUpload {
+    display: none;
+}

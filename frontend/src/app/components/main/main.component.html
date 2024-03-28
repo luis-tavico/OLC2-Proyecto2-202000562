@@ -1,0 +1,144 @@
+<!-- MODAL -->
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">{{ report_name }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-dark" *ngIf="report_name === 'Reporte de Errores'">
+                    <thead>
+                        <tr>
+                            <th>Tipo de Error</th>
+                            <th>Descripcion</th>
+                            <th>Linea</th>
+                            <th>Columna</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let error of errors">
+                            <td>{{ error.type }}</td>
+                            <td>{{ error.message }}</td>
+                            <td>{{ error.line }}</td>
+                            <td>{{ error.column }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table table-dark" *ngIf="report_name === 'Reporte de Simbolos'">
+                    <thead>
+                        <tr>
+                            <th>Identificador</th>
+                            <th>Tipo</th>
+                            <th>Tipo</th>
+                            <th>Linea</th>
+                            <th>Columna</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let symbol of symbols">
+                            <td>{{ symbol.symbol }}</td>
+                            <td>{{ symbol.type }}</td>
+                            <td>{{ symbol.datatype }}</td>
+                            <td>{{ symbol.line }}</td>
+                            <td>{{ symbol.column }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- FIN MODAL -->
+
+<div class="container-fluid px-5 bg-dark text-white">
+    <div class="row">
+        <div class="col-12">
+            <div class="row">
+                <div class="dropdown">
+                    <button class="btnOpcion dropdown-toggle border border-secondary border-right-0 px-4 py-1" type="button" data-toggle="dropdown" aria-expanded="false">Archivo</button>
+                    <ul class="dropdown-menu">
+                        <li><button class="dropdown-item text-white" type="button" (click)="add_tab()">Nuevo</button></li>
+                        <li><input #inputFile type="file" accept=".olc" style="display: none;" (change)="openFile($event)"/><button class="dropdown-item text-white" type="button" (click)="openFileExplorer(inputFile)">Abrir</button></li>
+                        <li><button class="dropdown-item text-white" type="button" (click)="save()">Guardar</button></li>
+                    </ul>
+                </div>
+                <div><button class="btnOpcion border border-secondary border-right-0 px-4 py-1" (click)="run()"><i class="fa-solid fa-play fa-xs"></i> Ejecutar</button></div>
+                <div class="dropdown">
+                    <button class="btnOpcion dropdown-toggle border border-secondary px-4 py-1" type="button" data-toggle="dropdown" aria-expanded="false">Reporte</button>
+                    <ul class="dropdown-menu">
+                        <li><button class="dropdown-item text-white" type="button" data-toggle="modal" data-target="#modal" (click)="getErrorsReport()">Errores</button></li>
+                        <li><button class="dropdown-item text-white" type="button" data-toggle="modal" data-target="#modal" (click)="getSymbolsReport()">Tabla de Simbolos</button></li>
+                        <li><button class="dropdown-item text-white" type="button">Arbol de Analisis</button></li>
+                    </ul>
+                </div>         
+
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="row">
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-1 py-3"></div>
+                        <div class="col-11 py-3 px-0">Entrada</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-1 py-3"></div>
+                        <div class="col-11 py-3 px-2">Salida</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="containerTabs row">
+                                <div class="boton border border-secondary col-3 px-0" *ngFor="let tab of tabs; let i = index;">
+                                    <div class="bg-secondary pr-1" *ngIf="currentTab==i; else noSelected" ><button class="btnTab text-white" (click)="select_tab(i)">{{ tab.nombre }}</button><i class="btnDel fa-solid fa-xmark" (click)="delete_tab(i)"></i></div>
+                                    <ng-template #noSelected><div class="pr-1"><button class="btnTab text-white" (click)="select_tab(i)">{{ tab.nombre }}</button><i class="btnDel fa-solid fa-xmark" (click)="delete_tab(i)"></i></div></ng-template>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-1"></div>
+                        <div class="col-11"></div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row">
+                        <div class="containerConsole containerInputCode col-12 border border-secondary pr-4">
+                            <div class="row">
+                                <div class="containerNumberLine text-right col-1 py-2">
+                                    <ng-container *ngFor="let line of linesInputConsole; let i = index">{{ i + 1 }}<br/></ng-container>
+                                </div>
+                                <div class="col-11 p-0">
+                                    <textarea #inputConsole class="p-2"  id="textarea1" rows="20" spellcheck="false" (input)="autoExpand(inputConsole)" [(ngModel)]="tabs[currentTab].contenido_actual" (input)="updateLinesInputConsole()" (keydown)="onKeyPress($event)"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 pl-4">
+                    <div class="row">
+                        <div class="containerConsole containerOutputCode col-12 border border-secondary pr-4">
+                            <div class="row">
+                                <div class="containerNumberLine text-right col-1 py-2">
+                                    <ng-container *ngFor="let line of linesOutputConsole; let i = index">{{ i + 1 }}<br/></ng-container>
+                                </div>
+                                <div class="col-11 p-0">
+                                    <textarea #outputConsole class="p-2" id="textarea2" rows="20" spellcheck="false" (input)="autoExpand(outputConsole)" [(ngModel)]="outputConsoleContent" (input)="updateLinesOutputConsole()" readonly></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
