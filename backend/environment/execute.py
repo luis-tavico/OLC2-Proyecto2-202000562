@@ -1,12 +1,12 @@
 from environment.type import ExpressionType
 
-def RootExecuter(instructionList, ast, env):
-    for inst in instructionList:
-        inst.execute(ast, env)
+def rootExecuter(instructions, ast, env, gen):
+    for instruction in instructions:
+        instruction.execute(ast, env, gen)
 
-def statementExecuter(instructionList, ast, env):
-    for inst in instructionList:
-        res = inst.execute(ast, env)
+def statementExecuter(instructions, ast, env, gen):
+    for instruction in instructions:
+        res = instruction.execute(ast, env, gen)
         if res != None and res != True:
             if res.data_type == ExpressionType.RETURN:
                 return res.value

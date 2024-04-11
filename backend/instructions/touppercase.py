@@ -9,10 +9,5 @@ class Touppercase(Instruction):
         self.line = line
         self.column = column
 
-    def execute(self, ast, env):
-        val = self.expression.execute(ast, env)
-        if val.data_type == ExpressionType.STRING:
-            return Symbol(symbol_type=None, value=val.value.upper(), data_type=ExpressionType.STRING, environment=env, line=self.line, column=self.column)
-        else:
-            ast.setErrors(Error("Semantico", "Se esperaba un tipo STRING.", "ToUpperCase", self.line, self.column))
+    def execute(self, ast, env, gen):
         return None

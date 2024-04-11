@@ -11,22 +11,5 @@ class If(Instruction):
         self.line = line
         self.column = column  
     
-    def execute(self, ast, env):
-        validate = self.exp.execute(ast, env)
-        if validate.value:
-            if_env = Environment(env, "IF")
-            returnValue = statementExecuter(self.if_block, ast, if_env)
-            if returnValue != None:
-                return returnValue
-            return None
-        if self.elseifs != None:
-            for elseif in self.elseifs:
-                validate = elseif.execute(ast, env)
-                if validate != None:
-                    return validate
-        if self.else_block != None:
-            else_env = Environment(env, "ELSE")
-            returnValue = statementExecuter(self.else_block, ast, else_env)
-            if returnValue != None:
-                return returnValue
+    def execute(self, ast, env, gen):
         return None

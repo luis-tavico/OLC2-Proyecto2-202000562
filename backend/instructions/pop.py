@@ -8,10 +8,5 @@ class Pop(Instruction):
         self.line = line
         self.column = column
 
-    def execute(self, ast, env):
-        sym = self.array.execute(ast, env)
-        if sym.data_type != ExpressionType.ARRAY:
-            ast.setErrors(Error("Semantico", "No se puede acceder a un elemento de un tipo diferente a un arreglo", "ArrayAccess", self.line, self.column))
-            return None
-        val = sym.value.pop()
-        return val
+    def execute(self, ast, env, gen):
+        return None

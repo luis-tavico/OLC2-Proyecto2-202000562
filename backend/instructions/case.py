@@ -9,7 +9,5 @@ class Case(Instruction):
         self.line = line
         self.column = column
 
-    def execute(self, ast, env):
-        switch_env = Environment(env, "SWITCH")
-        flag = statementExecuter(self.block, ast, switch_env)
-        return flag
+    def execute(self, ast, env, gen):
+        return None

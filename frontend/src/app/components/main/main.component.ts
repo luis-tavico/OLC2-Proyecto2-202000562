@@ -31,7 +31,6 @@ export class MainComponent implements OnInit {
   //Errores
   errors: any[] = [];
 
-
   constructor(private service: MainService) { }
 
   ngOnInit(): void {
@@ -107,22 +106,7 @@ export class MainComponent implements OnInit {
           this.outputConsole.nativeElement.style.height = 'auto';
           this.outputConsole.nativeElement.style.height = this.outputConsole.nativeElement.scrollHeight + 'px';
         } else {
-          let e: string = "";
-          for (let i = 0; i < r.errors.length; i++) {
-            if (i == 0) {
-              if (r.errors[i].type == "Lexico") {
-                e += "Error lexico en "+r.errors[i].error+", linea "+r.errors[i].line+", columna "+r.errors[i].column+".";
-              } else if (r.errors[i].type == "Sintactico") {
-                e += "Error sintactico en "+r.errors[i].error+", linea "+r.errors[i].line+", columna "+r.errors[i].column+".";
-              }
-            } else {
-              if (r.errors[i].type == "Lexico") {
-                e += "\nError lexico en "+r.errors[i].error+", linea "+r.errors[i].line+", columna "+r.errors[i].column+".";
-              } else if (r.errors[i].type == "Sintactico") {
-                e += "\nError sintactico en "+r.errors[i].error+", linea "+r.errors[i].line+", columna "+r.errors[i].column+".";
-              }
-            }
-          }
+          let e: string = "#=== Codigo ejecutado con errores. ===";
           this.linesOutputConsole = e.split('\n');
           this.outputConsole.nativeElement.value = e;
           this.outputConsoleContent = e;

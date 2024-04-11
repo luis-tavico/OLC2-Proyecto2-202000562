@@ -8,6 +8,5 @@ class Assignment(Instruction):
         self.line = line
         self.column = column
 
-    def execute(self, ast, env):
-        result = self.expression.execute(ast, env)
-        env.setSymbol(ast, self.id, self.type_assignment , result)
+    def execute(self, ast, env, gen):
+        return None

@@ -9,14 +9,5 @@ class Function(Instruction):
         self.line = line
         self.column = column
 
-    def execute(self, ast, env):
-        functionData = {
-            'symbol_type': "Function",
-            'data_type': self.type,
-            'params': self.params,
-            'block': self.block,
-            'environment': env,
-            'line': self.line,
-            'column': self.column
-        }
-        env.saveFunction(ast, self.id, functionData)
+    def execute(self, ast, env, gen):
+        return None

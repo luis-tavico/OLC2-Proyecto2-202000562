@@ -9,11 +9,5 @@ class Push(Instruction):
         self.line = line
         self.column = column
 
-    def execute(self, ast, env):
-        sym = self.array.execute(ast, env)
-        if sym.data_type != ExpressionType.ARRAY:
-            ast.setErrors(Error("Semantico", "No se puede acceder a un elemento de un tipo diferente a un arreglo", "ArrayAccess", self.line, self.column))
-            return None
-        exp = self.expression.execute(ast, env)
-        sym.value.append(exp)
+    def execute(self, ast, env, gen):
         return None

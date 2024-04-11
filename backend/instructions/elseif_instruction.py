@@ -9,13 +9,5 @@ class Elseif(Instruction):
         self.line = line
         self.column = column
 
-    def execute(self, ast, env):
-        validate = self.exp.execute(ast, env)
-        if validate.value:
-            else_if_env = Environment(env, "ELSE_IF")
-            result = statementExecuter(self.block, ast, else_if_env)
-            if result == None:
-                return True
-            else:
-                return result
+    def execute(self, ast, env, gen):
         return None

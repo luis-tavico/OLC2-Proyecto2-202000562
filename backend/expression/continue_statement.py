@@ -8,8 +8,5 @@ class Continue(Expression):
         self.line = line
         self.column = column
 
-    def execute(self, ast, env):
-        if env.loopValidation():
-            return Symbol(symbol_type=None, value=None, data_type=ExpressionType.CONTINUE, environment=env, line=self.line, column=self.column)
-        ast.setErrors(Error("La declaracion Continue no esta dentro de un ciclo.", self.line, self.column))
-        return Symbol(symbol_type=None, value=None, data_type=ExpressionType.NULL, environment=env, line=self.line, column=self.column)
+    def execute(self, ast, env, gen):
+        return None

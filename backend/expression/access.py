@@ -6,6 +6,5 @@ class Access(Expression):
         self.line = line
         self.column = column
 
-    def execute(self, ast, env):
-        sym = env.getSymbol(ast, self.id)
-        return sym
+    def execute(self, ast, env, gen):
+        return None

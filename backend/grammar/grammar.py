@@ -7,7 +7,6 @@ from expression.access import Access
 from expression.primitive import Primitive
 from expression.operation import Operation
 from expression.ternary import Ternary
-from expression.interface_access import Interfaceaccess
 from expression.array import Array
 from expression.array_access import ArrayAccess
 from expression.call import Call
@@ -30,11 +29,6 @@ from instructions.pop import Pop
 from instructions.indexof import Indexof
 from instructions.join import Join
 from instructions.length import Length
-from instructions.interface import Interface
-from instructions.interface_instance import Interfaceinstance
-from instructions.interface_assignment import Interfaceassignment
-from instructions.keys import Keys
-from instructions.values import Values
 from instructions.function import Function
 from instructions.print import Print
 from instructions.parseint import Parseint
@@ -64,10 +58,7 @@ reserved_words = {
     'while': 'WHILE',
     'for': 'FOR',
     'of': 'OF',
-    'interface': 'INTERFACE',
     'Object': 'OBJECT',
-    'keys': 'KEYS',
-    'values': 'VALUES',
     'function': 'FUNCTION',
     'break': 'BREAK',
     'continue': 'CONTINUE',
@@ -282,10 +273,8 @@ def p_instruction(t):
                    | switch
                    | while
                    | for
-                   | interface
-                   | instance_interface
                    | function
-                   | access_interface_methods SEMICOLON
+                   | methods SEMICOLON
                    | call_function SEMICOLON
                    | break
                    | continue
@@ -456,13 +445,12 @@ def p_call_function(t):
     else:
         t[0] = Call(t[1], [], params.line, params.column)
 
-def p_access_interface_methods(t):
-    '''access_interface_methods : access_interface_methods PERIOD name_method LEFT_PARENTHESIS RIGHT_PARENTHESIS
-                                | access_interface_methods PERIOD name_method expression
-                                | access_interface_methods PERIOD name_method
-                                | access_interface_methods PERIOD ID
-                                | access_array
-                                | value'''
+def p_embedded_functions(t):
+    '''methods : methods PERIOD name_method LEFT_PARENTHESIS RIGHT_PARENTHESIS
+               | methods PERIOD name_method expression
+               | methods PERIOD name_method
+               | access_array
+               | value'''
     params = get_position(t)
     if len(t) > 5:
         if t[3] == "toString":
@@ -483,8 +471,6 @@ def p_access_interface_methods(t):
     elif len(t) > 3:
         if t[3] == "length":
             t[0] = Length(t[1], params.line, params.column)
-        else:
-            t[0] = Interfaceaccess(t[1], t[3], params.line, params.column,)
     else:
         t[0] = t[1]
 
@@ -561,55 +547,6 @@ def p_expression_access_array(t):
         indexes.append(t[2])
     t[0] = indexes
     
-def p_interface(t):
-    '''interface : INTERFACE ID LEFT_CURLY_BRACKET attributes RIGHT_CURLY_BRACKET'''
-    params = get_position(t)
-    t[0] = Interface(t[2], t[4], params.line, params.column)
-
-def p_instruction_interface_attribute(t):
-    '''attributes : attributes ID COLON data_type SEMICOLON
-                  | ID COLON data_type SEMICOLON'''
-    att = []
-    if len(t) > 5:
-        attribute = {t[2] : t[4]}
-        att = t[1] + [attribute]
-    else:
-        attribute = {t[1] : t[3]}
-        att.append(attribute)
-    t[0] = att
-
-def p_assignment_interface(t):
-    '''assignment : access_interface_methods EQUAL expression SEMICOLON'''
-    params = get_position(t)
-    t[0] = Interfaceassignment(t[1], t[3], params.line, params.column)
-
-def p_instance_interface(t):
-    '''instance_interface : data_symbol ID COLON ID EQUAL LEFT_CURLY_BRACKET interface_content RIGHT_CURLY_BRACKET SEMICOLON'''
-    params = get_position(t)
-    t[0] = Interfaceinstance(t[2], t[4], t[7], params.line, params.column)
-
-def p_interface_content(t):
-    '''interface_content : interface_content COMMA ID COLON expression
-                         | ID COLON expression'''
-    cont = []
-    if len(t) > 5:
-        content = {t[3] : t[5]}
-        cont = t[1] + [content]
-    else:
-        content = {t[1] : t[3]}
-        cont.append(content)
-    t[0] = cont
-
-def p_interface_keys(t):
-    '''expression : OBJECT PERIOD KEYS LEFT_PARENTHESIS expression RIGHT_PARENTHESIS'''
-    params = get_position(t)
-    t[0] = Keys(t[5], params.line, params.column)
-
-def p_interface_values(t):
-    '''expression : OBJECT PERIOD VALUES LEFT_PARENTHESIS expression RIGHT_PARENTHESIS'''
-    params = get_position(t)
-    t[0] = Values(t[5], params.line, params.column)
-    
 def p_expression_list(t):
     '''expression_list : expression_list COMMA expression
                        | expression '''
@@ -624,7 +561,6 @@ def p_expression(t):
     '''expression : expression_unary
                   | expression_binary
                   | expression_group
-                  | access_interface_methods
                   | methods
                   | call_function'''
     t[0] = t[1]

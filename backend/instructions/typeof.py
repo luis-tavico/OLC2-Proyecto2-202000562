@@ -9,8 +9,5 @@ class Typeof(Instruction):
         self.line = line
         self.column = column
 
-    def execute(self, ast, env):
-        val = self.expression.execute(ast, env)
-        if val:
-            return Symbol(symbol_type=None, value=val.data_type.name.lower(), data_type=ExpressionType.STRING, environment=env, line=self.line, column=self.column)
+    def execute(self, ast, env, gen):
         return None

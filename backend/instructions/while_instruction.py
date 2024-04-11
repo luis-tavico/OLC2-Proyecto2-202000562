@@ -11,26 +11,5 @@ class While(Instruction):
         self.line = line
         self.column = column
 
-    def execute(self, ast, env):
-        safe_cont = 0
-        flag = None
-        result = None
-        while True:
-            safe_cont += 1
-            result = self.exp.execute(ast, env)
-            if result.value:
-                while_env = Environment(env, "WHILE")
-                flag = statementExecuter(self.block, ast, while_env)
-                if flag != None:
-                    if flag.data_type == ExpressionType.BREAK:
-                        break
-                    if flag.data_type == ExpressionType.CONTINUE:
-                        continue
-                    if flag.data_type == ExpressionType.RETURN:
-                        return flag
-            else:
-                break
-            if safe_cont >= 1000:
-                ast.setErrors(Error("Semantico", "Se ha excedido el maximo de ciclos permitidos." , "While", self.line, self.column))
-                break
+    def execute(self, ast, env, gen):
         return None

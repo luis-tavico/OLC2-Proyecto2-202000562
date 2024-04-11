@@ -8,8 +8,5 @@ class Ternary(Expression):
         self.line = line
         self.column = column
 
-    def execute(self, ast, env):
-        condition = self.exp1.execute(ast, env)
-        if condition.value:
-            return self.exp2.execute(ast, env)
-        return self.exp3.execute(ast, env)
+    def execute(self, ast, env, gen):
+        return None

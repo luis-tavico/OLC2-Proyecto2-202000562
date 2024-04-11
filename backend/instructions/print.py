@@ -7,24 +7,22 @@ class Print(Instruction):
         self.line = line
         self.column = column
 
-    def execute(self, ast, env):
-        outText = ""
+    def execute(self, ast, env, gen):
         for exp in self.expression:
-            sym = exp.execute(ast, env)
-            if sym == None:
-                continue
-            if sym.data_type == ExpressionType.ARRAY:
-                outText += self.print_array(sym.value)
-            elif sym.data_type == ExpressionType.NULL:
-                pass
-            elif sym.data_type == ExpressionType.BOOLEAN:
-                    if sym.value == True:
-                        outText += "true"
-                    elif sym.value == False:
-                        outText += "false"
-            else:
-                outText += str(sym.value) + " "
-        ast.setConsole(outText)
+            val = exp.execute(ast, env, gen)
+            # Imprimiendo expresion
+            gen.add_br()
+            gen.add_li('t3', str(val.value))
+            gen.add_lw('a0', '0(t3)')
+            gen.add_li('a7', '1')
+            gen.add_system_call()
+            # Imprimiendo salto de linea
+            gen.add_br()
+            gen.add_li('a0', '10')
+            gen.add_li('a7', '11')
+            gen.add_system_call()
+
+        return None
 
     def print_array(self, array):
         result = ""
