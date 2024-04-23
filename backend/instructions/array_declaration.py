@@ -1,6 +1,6 @@
 from abstract.instruction import Instruction
 from environment.type import ExpressionType
-from environment.environment import Environment
+from environment.symbol import Symbol
 from errors.error import Error
 
 class ArrayDeclaration(Instruction):
@@ -12,4 +12,16 @@ class ArrayDeclaration(Instruction):
         self.column = column
 
     def execute(self, ast, env, gen):
+        temp = gen.new_temp()
+        arrValue = self.exp.execute(ast, env, gen)
+        # Validar tipo
+        if arrValue.type != ExpressionType.ARRAY:
+            ast.setErrors(Error(type="Semantico", description="La expresion no es un arreglo", ambit="Global" , line=self.line, column=self.column))
+            return None
+        nameId = 'arr_'+str(temp)
+        gen.variable_data(nameId, 'word', ', '.join(arrValue.value) )
+        # Generar simbolo
+        sym = Symbol(symbol_type='VAR', id=self.id, data_type=self.type, position=nameId, line=self.line, column=self.column)
+        # Agregar al entorno
+        env.saveVariable(ast, self.id, sym)
         return None

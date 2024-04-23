@@ -6,67 +6,49 @@ class Environment():
     def __init__(self, previous, id):
         self.previous = previous
         self.id = id
-        self.symbols_table = {}
+        self.tabla = {}
         self.interfaces = {}
         self.functions = {}
 
-    def saveSymbol(self, ast, id, symbol):
-        if id in self.symbols_table:
-            ast.setErrors(Error("Semantico", f"Variable {id} ya existe", self.id, symbol.line, symbol.column))
+    def saveVariable(self, ast, id, symbol):
+        if id in self.tabla:
+            ast.setErrors(Error(type="Semantico", description=f"La variable {id} ya existe", ambit="Global" , line=symbol.line, column=symbol.column))
             return
-        self.symbols_table[id] = symbol
+        self.tabla[id] = symbol
 
-    def setSymbol(self, ast, id, type_assignment, symbol):
+    def getVariable(self, ast, id, position):
         tmpEnv = self
         while True:
-            if id in tmpEnv.symbols_table:
-                if tmpEnv.symbols_table[id].data_type == symbol.data_type:
-                    if tmpEnv.symbols_table[id].symbol_type == "const":
-                        ast.setErrors(Error("Semantico", f"Variable {id} es constante", self.id, symbol.line, symbol.column))
-                        return symbol
-                    if type_assignment == "+=":
-                        if symbol.data_type == ExpressionType.NUMBER or symbol.data_type == ExpressionType.FLOAT or symbol.data_type == ExpressionType.STRING:
-                            tmpEnv.symbols_table[id].value += symbol.value
-                        else:
-                            ast.setErrors(Error("Semantico", f"Tipos no compatibles para incrementar", self.id, symbol.line, symbol.column))
-                    elif type_assignment == "-=":
-                        if symbol.data_type == ExpressionType.NUMBER or symbol.data_type == ExpressionType.FLOAT or symbol.data_type == ExpressionType.STRING:
-                            tmpEnv.symbols_table[id].value -= symbol.value
-                        else:
-                            ast.setErrors(Error("Semantico", f"Tipos no compatibles para decrementar", self.id, symbol.line, symbol.column))
-                    else:
-                        tmpEnv.symbols_table[id].value = symbol.value
-                else:
-                    if tmpEnv.symbols_table[id].data_type == ExpressionType.FLOAT and symbol.data_type == ExpressionType.NUMBER:
-                        tmpEnv.symbols_table[id].value = float(symbol.value)
-                    else:
-                        ast.setErrors(Error("Semantico", f"Variable {id} no es del mismo tipo", self.id, symbol.line, symbol.column))
+            if id in tmpEnv.tabla:
+                return tmpEnv.tabla[id]
+            if tmpEnv.previous == None:
+                break
+            else:
+                tmpEnv = tmpEnv.previous
+        ast.setErrors(Error(type="Semantico", description=f"La variable {id} no existe", ambit="Global" , line=position['line'], column=position['column']))
+        return Symbol(symbol_type='', id='', data_type=ExpressionType.NULL, position='', line=position['line'], column=position['column'])
+
+    def setVariable(self, ast, id, symbol):
+        tmpEnv = self
+        while True:
+            if id in tmpEnv.tabla:
+                tmpEnv.tabla[id] = symbol
                 return symbol
             if tmpEnv.previous == None:
                 break
             else:
                 tmpEnv = tmpEnv.previous
-        ast.setErrors(Error("Semantico", f"Variable {id} no existe", self.id, symbol.line, symbol.column))
-        return Symbol(symbol_type=None, value=None, data_type=ExpressionType.NULL, environment=None, line=0, column=0)
+        #ast.setErrors(f"La variable {id} no existe.")
+        ast.setErrors(Error(type="Semantico", description=f"La variable {id} no existe", ambit="Global" , line=symbol.line, column=symbol.column))
+        return Symbol(symbol_type='', id='', data_type=ExpressionType.NULL, position='', line=symbol.line, column=symbol.column)
 
-    def getSymbol(self, ast, id):
-        tmpEnv = self
-        while True:
-            if id in tmpEnv.symbols_table:
-                return tmpEnv.symbols_table[id]
-            if tmpEnv.previous == None:
-                break
-            else:
-                tmpEnv = tmpEnv.previous
-        ast.setErrors(Error("Semantico", f"Variable {id} no existe", self.id, 0, 0))
-        return Symbol(symbol_type=None, value=None, data_type=ExpressionType.NULL, environment=None, line=0, column=0)
-    
+
     def saveFunction(self, ast, id, function):
         if id in self.functions:
-            ast.setErrors(Error("Semantico", f"Funcion {id} ya existe", self.id, function.line, function.column))
+            ast.setErrors(f"Ya existe una función con el nombre {id}")
             return
         self.functions[id] = function
-    
+
     def getFunction(self, ast, id):
         tmpEnv = self
         while True:
@@ -76,12 +58,12 @@ class Environment():
                 break
             else:
                 tmpEnv = tmpEnv.previous
-        ast.setErrors(Error("Semantico", f"Funcion {id} no existe", self.id, 0, 0))
+        ast.setErrors(f"La función {id} no existe.")
         return {}
-    
+
     def saveStruct(self, ast, id, struct):
         if id in self.interfaces:
-            ast.setErrors(Error("Semantico", f"La interface {id} ya existe", self.id, struct.line, struct.column))
+            ast.setErrors(f"Ya existe una interface con el nombre {id}")
             return
         self.interfaces[id] = struct
     
@@ -94,13 +76,13 @@ class Environment():
                 break
             else:
                 tmpEnv = tmpEnv.previous
-        ast.setErrors(Error("Semantico", f"La interface {id} no existe", self.id, 0, 0))
+        ast.setErrors(f"La interfaz {id} no existe.")
         return None
-    
+
     def loopValidation(self):
         tmpEnv = self
         while True:
-            if tmpEnv.id ==  "WHILE" or tmpEnv.id == "FOR" or tmpEnv.id == "SWITCH":
+            if tmpEnv.id == 'WHILE' or tmpEnv.id == 'FOR':
                 return True
             if tmpEnv.previous == None:
                 break

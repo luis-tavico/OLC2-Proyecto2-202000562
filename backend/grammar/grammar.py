@@ -283,17 +283,17 @@ def p_instruction(t):
     t[0] = t[1]
 
 def p_declaration_type_value(t):
-    '''declaration : data_symbol ID COLON data_type EQUAL expression SEMICOLON'''
+    '''declaration : symbol_type ID COLON data_type EQUAL expression SEMICOLON'''
     params = get_position(t)
     t[0] = Declaration(t[1], t[2], t[4], t[6], params.line, params.column)
 
 def p_declaration_type(t):
-    '''declaration : data_symbol ID COLON data_type SEMICOLON'''
+    '''declaration : symbol_type ID COLON data_type SEMICOLON'''
     params = get_position(t)
     t[0] = Declaration(t[1], t[2], t[4], None, params.line, params.column)
 
 def p_declaration_value(t):
-    '''declaration : data_symbol ID EQUAL expression SEMICOLON'''
+    '''declaration : symbol_type ID EQUAL expression SEMICOLON'''
     params = get_position(t)
     t[0] = Declaration(t[1], t[2], None, t[4], params.line, params.column)
 
@@ -304,7 +304,7 @@ def p_assignment(t):
     params = get_position(t)
     t[0] = Assignment(t[1], t[2], t[3], params.line, params.column)
 
-def p_tenary(t):
+def p_ternary(t):
     '''expression : expression TERNARY expression COLON expression'''
     params = get_position(t)
     t[0] = Ternary(t[1], t[3], t[5], params.line, params.column)
@@ -375,7 +375,7 @@ def p_for(t):
     t[0] = For(t[3], t[4], t[6], t[9], params.line, params.column)
 
 def p_for_array(t):
-    '''for : FOR LEFT_PARENTHESIS data_symbol ID OF ID RIGHT_PARENTHESIS LEFT_CURLY_BRACKET block RIGHT_CURLY_BRACKET'''
+    '''for : FOR LEFT_PARENTHESIS symbol_type ID OF ID RIGHT_PARENTHESIS LEFT_CURLY_BRACKET block RIGHT_CURLY_BRACKET'''
     params = get_position(t)
     t[0] = For(None, t[4], t[6], t[9], params.line, params.column)
 
@@ -506,47 +506,22 @@ def p_typeof(t):
     t[0] = Typeof(t[2], params.line, params.column)
 
 def p_declaration_array(t):
-    '''declaration_array : data_symbol ID COLON data_type dimension_array EQUAL expression SEMICOLON'''
+    '''declaration_array : symbol_type ID COLON data_type LEFT_SQ_BRACKET RIGHT_SQ_BRACKET EQUAL LEFT_SQ_BRACKET expression_list RIGHT_SQ_BRACKET SEMICOLON'''
     params = get_position(t)
-    t[0] = ArrayDeclaration(t[2], t[4], t[7], params.line, params.column)    
-
-def p_dimension_array(t):
-    '''dimension_array : dimension_array LEFT_SQ_BRACKET RIGHT_SQ_BRACKET
-                       | LEFT_SQ_BRACKET RIGHT_SQ_BRACKET'''
-    arr_dimension = 0
-    if len(t) > 3:
-        arr_dimension = t[1] + 1
-    else:
-        arr_dimension = 1
-    t[0] = arr_dimension
-
-def p_expression_array(t):
-    '''expression : LEFT_SQ_BRACKET expression_list RIGHT_SQ_BRACKET'''
-    params = get_position(t)
-    t[0] = Array(t[2], params.line, params.column)
+    t[9] = Array(t[9], params.line, params.column)
+    t[0] = ArrayDeclaration(t[2], t[4], t[9], params.line, params.column)    
 
 def p_assignment_array(t):
-    '''assignment : ID indexes_array EQUAL expression SEMICOLON'''
+    '''assignment : ID LEFT_SQ_BRACKET expression RIGHT_SQ_BRACKET EQUAL expression SEMICOLON'''
     params = get_position(t)
     t[1] = Access(t[1], params.line, params.column)
-    t[0] = Arrayassignment(t[1], t[2], t[4], params.line, params.column)
+    t[0] = Arrayassignment(t[1], [t[3]], t[6], params.line, params.column)
 
 def p_access_array(t):
-    '''access_array : ID indexes_array'''
+    '''access_array : ID LEFT_SQ_BRACKET expression RIGHT_SQ_BRACKET'''
     params = get_position(t)
-    t[1] = Access(t[1], params.line, params.column)
-    t[0] = ArrayAccess(t[1], t[2], params.line, params.column)
-
-def p_expression_access_array(t):
-    '''indexes_array : indexes_array LEFT_SQ_BRACKET expression RIGHT_SQ_BRACKET
-                     | LEFT_SQ_BRACKET expression RIGHT_SQ_BRACKET'''
-    indexes = []
-    if len(t) > 4:
-        indexes = t[1] + [t[3]]
-    else:
-        indexes.append(t[2])
-    t[0] = indexes
-    
+    t[0] = ArrayAccess(t[1], t[3], params.line, params.column)
+  
 def p_expression_list(t):
     '''expression_list : expression_list COMMA expression
                        | expression '''
@@ -613,7 +588,7 @@ def p_expression_group(t):
     t[0] = t[2]
 
 def p_data_symbol(t):
-    '''data_symbol : VAR
+    '''symbol_type : VAR
                    | CONST'''
     t[0] = t[1]
 
@@ -622,8 +597,7 @@ def p_data_type(t):
                  | FLOAT
                  | STRING
                  | CHAR
-                 | BOOLEAN
-                 | ID'''
+                 | BOOLEAN'''
     if t[1] == 'number':
         t[0] = ExpressionType.NUMBER
     elif t[1] == 'float': 
@@ -634,8 +608,6 @@ def p_data_type(t):
         t[0] = ExpressionType.CHAR
     elif t[1] == 'boolean':
         t[0] = ExpressionType.BOOLEAN
-    else:
-        t[0] = ExpressionType.NULL
 
 def p_value(t):
     '''value : INTEGER
