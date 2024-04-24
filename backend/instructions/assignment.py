@@ -8,11 +8,20 @@ class Assignment(Instruction):
         self.expression = expression
         self.line = line
         self.column = column
-
+   
     def execute(self, ast, env, gen):
+        gen.comment('Asignacion de variable')
         # Obtener valor
         result = self.expression.execute(ast, env, gen)
-        sym = Symbol(symbol_type='', id=self.id, data_type=result.type, position=result.value, line=self.line, column=self.column)
-        # Editar simbolo
-        env.setVariable(ast, self.id, sym)
+        # Obteniendo la posicion
+        sym = env.getVariable(ast, self.id, {'line': self.line, 'column': self.column})
+        # Sustituyendo valor
+        if 't' in str(result.value):
+            gen.add_move('t0', str(result.value))
+        else:
+            gen.add_li('t0', str(result.value))
+        gen.add_lw('t1', '0(t0)')
+        gen.add_li('t3', str(sym.position))
+        gen.add_sw('t1', '0(t3)')
+        gen.comment('Fin asignacion')
         return None

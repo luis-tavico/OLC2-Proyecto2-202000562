@@ -12,4 +12,26 @@ class If(Instruction):
         self.column = column  
     
     def execute(self, ast, env, gen):
+        gen.comment('Generando un If')
+        # Se imprime el "if" en el código de la expresion
+        condition = self.exp.execute(ast, env, gen)
+        # Etiqueta de salida
+        newLabel = gen.new_label()
+        # Se agregan las etiquetas verdaderas
+        for lvl in condition.truelvl:
+            gen.new_body_label(lvl)
+        # Instrucciones If
+        if_env = Environment(env, "IF")
+        statementExecuter(self.if_block, ast, if_env, gen)
+        # Salto etiqueta de salida
+        gen.add_jump(newLabel)
+        # Se agregan las etiquetas falsas
+        for lvl in condition.falselvl:
+            gen.new_body_label(lvl)
+        # Validar else
+        if self.else_block != None:
+            else_env = Environment(env, "ELSE")
+            statementExecuter(self.else_block, ast, else_env, gen)
+        # Etiqueta de salida
+        gen.new_body_label(newLabel)
         return None
