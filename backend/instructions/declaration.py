@@ -1,5 +1,7 @@
 from abstract.instruction import Instruction
+from expression.primitive import Primitive
 from environment.symbol import Symbol
+from environment.type import ExpressionType
 from errors.error import Error
 
 class Declaration(Instruction):
@@ -12,8 +14,17 @@ class Declaration(Instruction):
         self.column = column
 
     def execute(self, ast, env, gen):
-        # Generar simbolo
+        if self.expression == None:
+            if self.data_type == ExpressionType.NUMBER:
+                self.expression = Primitive(0, ExpressionType.NUMBER, self.line, self.column)
+            elif self.data_type == ExpressionType.STRING:
+                self.expression = Primitive("", ExpressionType.STRING, self.line, self.column)
+        # Ejecutar expresion
         result = self.expression.execute(ast, env, gen)
+        # Asignar tipo si no tiene
+        if self.data_type == None:
+            self.data_type = result.type
+        # Generar simbolo
         sym = Symbol(symbol_type=self.symbol_type, id=self.id, data_type=self.data_type, position=result.value, line=self.line, column=self.column)
         # Validar tipo
         if result.type != self.data_type:
@@ -21,4 +32,5 @@ class Declaration(Instruction):
             return
         # Agregar al entorno
         env.saveVariable(ast, self.id, sym)
+
         return None

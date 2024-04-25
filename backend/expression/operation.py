@@ -37,22 +37,22 @@ class Operation(Expression):
             gen.add_operation('add', 't0', 't1', 't2')
             gen.add_li('t3', str(temp))
             gen.add_sw('t0', '0(t3)')
-            return  Value(str(temp), True, ExpressionType.INTEGER, [], [], [])
+            return  Value(str(temp), True, ExpressionType.NUMBER, [], [], [])
         elif self.operator == "-":
             gen.add_operation('sub', 't0', 't1', 't2')
             gen.add_li('t3', str(temp))
             gen.add_sw('t0', '0(t3)')
-            return  Value(str(temp), True, ExpressionType.INTEGER, [], [], [])
+            return  Value(str(temp), True, ExpressionType.NUMBER, [], [], [])
         elif self.operator == "*":
             gen.add_operation('mul', 't0', 't1', 't2')
             gen.add_li('t3', str(temp))
             gen.add_sw('t0', '0(t3)')
-            return  Value(str(temp), True, ExpressionType.INTEGER, [], [], [])
+            return  Value(str(temp), True, ExpressionType.NUMBER, [], [], [])
         elif self.operator == "/":
             gen.add_operation('div', 't0', 't1', 't2')
             gen.add_li('t3', str(temp))
             gen.add_sw('t0', '0(t3)')
-            return  Value(str(temp), True, ExpressionType.INTEGER, [], [], [])
+            return  Value(str(temp), True, ExpressionType.NUMBER, [], [], [])
         elif self.operator == "%":
             gen.add_operation('rem', 't0', 't1', 't2')
             gen.add_li('t3', str(temp))
