@@ -22,3 +22,20 @@ class Primitive(Expression):
             nameId = 'str_'+str(temp)
             gen.variable_data(nameId, 'string', '\"'+str(self.value)+'\"')
             return  Value(nameId, False, self.type, [], [], [])
+        elif (self.type == ExpressionType.CHAR):
+            nameId = 'char_'+str(temp)
+            gen.variable_data(nameId, 'byte', '\''+str(self.value)+'\'')
+            return  Value(nameId, False, self.type, [], [], [])
+        elif (self.type == ExpressionType.BOOLEAN):
+            # Generando etiquetas
+            trueLvl = gen.new_label()
+            falseLvl = gen.new_label()
+            # Agregando condición
+            gen.add_beq('t1', 't2', trueLvl)
+            # Agregando salto
+            gen.add_jump(falseLvl)
+            # Result
+            result = Value("", False, ExpressionType.BOOLEAN, [], [], [])
+            result.truelvl.append(trueLvl)
+            result.falselvl.append(falseLvl)
+            return result

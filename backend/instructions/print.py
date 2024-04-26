@@ -24,7 +24,7 @@ class Print(Instruction):
                 gen.add_lw('a0', '0(t3)')
                 gen.add_li('a7', '1')
                 gen.add_system_call()
-            elif (val.type == ExpressionType.STRING):
+            elif (val.type == ExpressionType.STRING or val.type == ExpressionType.CHAR):
                 gen.add_br()
                 if 't' in str(val.value) and len(str(val.value)) < 2:
                     gen.add_move('a0', str(val.value))
@@ -32,11 +32,39 @@ class Print(Instruction):
                     gen.add_la('a0', str(val.value))
                 gen.add_li('a7', '4')
                 gen.add_system_call()
+            elif (val.type == ExpressionType.BOOLEAN):
+                # Etiqueta de salida
+                newLabel = gen.new_label()
+                # Se agregan las etiquetas verdaderas
+                for lvl in val.truelvl:
+                    gen.new_body_label(lvl)
+                # Imprimiendo expresion
+                gen.add_br()
+                gen.add_la('a0', 'str_true')
+                gen.add_li('a7', '4')
+                gen.add_system_call()
+                # Imprimiendo salto de linea
+                gen.add_br()
+                gen.add_li('a0', '10')
+                gen.add_li('a7', '11')
+                gen.add_system_call()
+                # Salto etiqueta de salida
+                gen.add_jump(newLabel)
+                # Se agregan las etiquetas falsas
+                for lvl in val.falselvl:
+                    gen.new_body_label(lvl)
+                # Imprimiendo expresion
+                gen.add_br()
+                gen.add_la('a0', 'str_false')
+                gen.add_li('a7', '4')
+                gen.add_system_call()
         # Imprimiendo salto de linea
         gen.add_br()
         gen.add_li('a0', '10')
         gen.add_li('a7', '11')
         gen.add_system_call()
+        if (val.type == ExpressionType.BOOLEAN):
+            gen.new_body_label(newLabel)
 
         return None
 

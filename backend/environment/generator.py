@@ -107,6 +107,8 @@ class Generator:
     def add_headers(self):
         self.Code.insert(0,'\n.text\n.globl _start\n\n_start:\n')
         self.Data.insert(0,'.data\n')
+        self.variable_data('str_true', 'string', '\"true\"')
+        self.variable_data('str_false', 'string', '\"false\"')
         self.Code[:0] = self.Data
             
     def add_footers(self):
