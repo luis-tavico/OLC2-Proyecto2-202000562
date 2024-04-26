@@ -55,25 +55,3 @@ class While(Instruction):
         for lvl in result.falselvl:
             gen.new_body_label(lvl)
         return None
-
-
-
-
-
-
-
-
-    '''
-        # Se agregan las etiquetas verdaderas
-        for lvl in condition.truelvl:
-            gen.new_body_label(lvl)
-        # Instrucciones While
-        while_env = Environment(env, "WHILE")
-        statementExecuter(self.block, ast, while_env, gen)
-        # Salto etiqueta de retorno
-        gen.add_jump(newLabel)
-        # Se agregan las etiquetas falsas
-        for lvl in condition.falselvl:
-            gen.new_body_label(lvl)
-        return None
-    '''

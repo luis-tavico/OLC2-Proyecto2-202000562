@@ -13,23 +13,27 @@ class Operation(Expression):
     def execute(self, ast, env, gen):
 
         # Ejecución de operandos
-        op1 = self.operationL.execute(ast, env, gen)
-        op2 = self.operationR.execute(ast, env, gen)
+        op1 = None
+        op2 = None
+        if self.operationL != None:
+            op1 = self.operationL.execute(ast, env, gen)
+        if self.operationR != None:
+            op2 = self.operationR.execute(ast, env, gen)
+        if op1 != None:
+            gen.add_br()
+            gen.comment('Realizando operacion')
+            if 't' in str(op1.value):
+                gen.add_move('t3', str(op1.value))
+            else:
+                gen.add_li('t3', str(op1.value))
+            gen.add_lw('t1', '0(t3)')
+        if op2 != None:
+            if 't' in str(op2.value):
+                gen.add_move('t3', str(op2.value))
+            else:
+                gen.add_li('t3', str(op2.value)) 
+            gen.add_lw('t2', '0(t3)')
 
-        gen.add_br()
-        gen.comment('Realizando operacion')
-        if 't' in str(op1.value):
-            gen.add_move('t3', str(op1.value))
-        else:
-            gen.add_li('t3', str(op1.value))
-        #gen.add_li('t3', str(op1.value))
-        gen.add_lw('t1', '0(t3)')
-        if 't' in str(op2.value):
-            gen.add_move('t3', str(op2.value))
-        else:
-            gen.add_li('t3', str(op2.value)) 
-        #gen.add_li('t3', str(op2.value))
-        gen.add_lw('t2', '0(t3)')
         temp = gen.new_temp()
 
         # OPERACIONES ARITMETICAS
@@ -252,5 +256,23 @@ class Operation(Expression):
             gen.add_li('t3', str(temp))
             gen.add_sw('t0', '0(t3)')
             return  Value(str(temp), True, ExpressionType.BOOLEAN, [], [], [])
+        elif self.operator == "!":
+            gen.add_operation('xor', 't0', 't1', 't2')
+            gen.add_li('t3', str(temp))
+            gen.add_sw('t0', '0(t3)')
+            return  Value(str(temp), True, ExpressionType.BOOLEAN, [], [], [])
+        
+        # OPERACIONES DE INCREMENTO Y DECREMENTO
+        elif self.operator == "++":
+            gen.add_operation('add', 't0', 't1', 't2')
+            gen.add_li('t3', str(temp))
+            gen.add_sw('t0', '0(t3)')
+            return  Value(str(temp), True, ExpressionType.NUMBER, [], [], [])
+        
+        elif self.operator == "--":
+            gen.add_operation('sub', 't0', 't1', 't2')
+            gen.add_li('t3', str(temp))
+            gen.add_sw('t0', '0(t3)')
+            return  Value(str(temp), True, ExpressionType.NUMBER, [], [], [])
 
         return None

@@ -545,12 +545,16 @@ def p_expression_unary(t):
                         | NOT expression
                         | expression INCREASE
                         | expression DECREASE'''
-    if t[1] == '-' or t[1] == '!':
-        params = get_position(t)
-        t[0] = Operation(t[2], t[1], None, params.line, params.column)
+    params = get_position(t)
+    if t[1] == '-':
+        zero = Primitive(0, ExpressionType.NUMBER, params.line, params.column)
+        t[0] = Operation(zero, t[1], t[2], params.line, params.column)
+    elif t[1] == '!':
+        one = Primitive(1, ExpressionType.NUMBER, params.line, params.column)
+        t[0] = Operation(t[2], t[1], one, params.line, params.column)
     elif t[2] == '--' or t[2] == '++':
-        params = get_position(t)
-        t[0] = Operation(t[1], t[2], None, params.line, params.column)
+        one = Primitive(1, ExpressionType.NUMBER, params.line, params.column)
+        t[0] = Operation(t[1], t[2], one, params.line, params.column)
 
 def p_expression_binary(t):
     '''expression_binary : arithmetic
