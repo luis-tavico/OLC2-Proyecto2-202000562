@@ -80,8 +80,8 @@ class Generator:
     def add_bge(self, left, right, target):
         self.Code.append(f"\tbge {left}, {right}, {target}\n")
 
-    def add_blez(self, left, right, target):
-        self.Code.append(f"\tblez {left}, {right}, {target}\n")
+    def add_ble(self, left, right, target):
+        self.Code.append(f"\tble {left}, {right}, {target}\n")
 
     def add_beq(self, left, right, target):
         self.Code.append(f"\tbeq {left}, {right}, {target}\n")

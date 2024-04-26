@@ -27,15 +27,12 @@ class Primitive(Expression):
             gen.variable_data(nameId, 'byte', '\''+str(self.value)+'\'')
             return  Value(nameId, False, self.type, [], [], [])
         elif (self.type == ExpressionType.BOOLEAN):
-            # Generando etiquetas
-            trueLvl = gen.new_label()
-            falseLvl = gen.new_label()
-            # Agregando condición
-            gen.add_beq('t1', 't2', trueLvl)
-            # Agregando salto
-            gen.add_jump(falseLvl)
-            # Result
-            result = Value("", False, ExpressionType.BOOLEAN, [], [], [])
-            result.truelvl.append(trueLvl)
-            result.falselvl.append(falseLvl)
-            return result
+            gen.add_br()
+            gen.comment('Agregando un primitivo booleano')
+            if self.value:
+                gen.add_li('t0', '1')
+            else:
+                gen.add_li('t0', '0')
+            gen.add_li('t3', str(temp))
+            gen.add_sw('t0', '0(t3)')
+            return  Value(str(temp), True, self.type, [], [], [])

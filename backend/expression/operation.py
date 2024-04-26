@@ -32,7 +32,7 @@ class Operation(Expression):
         gen.add_lw('t2', '0(t3)')
         temp = gen.new_temp()
 
-        #Operaciones aritmeticas
+        # OPERACIONES ARITMETICAS
         if self.operator == "+":
             gen.add_operation('add', 't0', 't1', 't2')
             gen.add_li('t3', str(temp))
@@ -58,7 +58,8 @@ class Operation(Expression):
             gen.add_li('t3', str(temp))
             gen.add_sw('t0', '0(t3)')
             return  Value(str(temp), True, ExpressionType.NUMBER, [], [], [])
-        #Operaciones relacionales
+        
+        # OPERACIONES RELACIONALES
         elif self.operator == "<":
             # Generando etiquetas
             trueLvl = gen.new_label()
@@ -68,9 +69,26 @@ class Operation(Expression):
             # Agregando salto
             gen.add_jump(falseLvl)
             # Result
-            result = Value("", False, ExpressionType.BOOLEAN, [], [], [])
+            result = Value(str(temp), False, ExpressionType.BOOLEAN, [], [], [])
             result.truelvl.append(trueLvl)
             result.falselvl.append(falseLvl)
+            # Etiqueta de salida
+            newLabel = gen.new_label()
+            for lvl in result.truelvl:
+                gen.new_body_label(lvl)
+                # Agregando primitivo
+                gen.add_li('t0', str(1))
+                gen.add_li('t3', str(temp))
+                gen.add_sw('t0', '0(t3)')
+                gen.add_jump(newLabel)
+            # Se agregan las etiquetas falsas
+            for lvl in result.falselvl:
+                gen.new_body_label(lvl)
+                # Agregando primitivo
+                gen.add_li('t0', str(0))
+                gen.add_li('t3', str(temp))
+                gen.add_sw('t0', '0(t3)')
+            gen.new_body_label(newLabel)
             return result
         elif self.operator == ">":
             # Generando etiquetas
@@ -81,9 +99,26 @@ class Operation(Expression):
             # Agregando salto
             gen.add_jump(falseLvl)
             # Result
-            result = Value("", False, ExpressionType.BOOLEAN, [], [], [])
+            result = Value(str(temp), False, ExpressionType.BOOLEAN, [], [], [])
             result.truelvl.append(trueLvl)
             result.falselvl.append(falseLvl)
+            # Etiqueta de salida
+            newLabel = gen.new_label()
+            for lvl in result.truelvl:
+                gen.new_body_label(lvl)
+                # Agregando primitivo
+                gen.add_li('t0', str(1))
+                gen.add_li('t3', str(temp))
+                gen.add_sw('t0', '0(t3)')
+                gen.add_jump(newLabel)
+            # Se agregan las etiquetas falsas
+            for lvl in result.falselvl:
+                gen.new_body_label(lvl)
+                # Agregando primitivo
+                gen.add_li('t0', str(0))
+                gen.add_li('t3', str(temp))
+                gen.add_sw('t0', '0(t3)')
+            gen.new_body_label(newLabel)
             return result
         elif self.operator == ">=":
             # Generando etiquetas
@@ -94,22 +129,56 @@ class Operation(Expression):
             # Agregando salto
             gen.add_jump(falseLvl)
             # Result
-            result = Value("", False, ExpressionType.BOOLEAN, [], [], [])
+            result = Value(str(temp), False, ExpressionType.BOOLEAN, [], [], [])
             result.truelvl.append(trueLvl)
             result.falselvl.append(falseLvl)
+            # Etiqueta de salida
+            newLabel = gen.new_label()
+            for lvl in result.truelvl:
+                gen.new_body_label(lvl)
+                # Agregando primitivo
+                gen.add_li('t0', str(1))
+                gen.add_li('t3', str(temp))
+                gen.add_sw('t0', '0(t3)')
+                gen.add_jump(newLabel)
+            # Se agregan las etiquetas falsas
+            for lvl in result.falselvl:
+                gen.new_body_label(lvl)
+                # Agregando primitivo
+                gen.add_li('t0', str(0))
+                gen.add_li('t3', str(temp))
+                gen.add_sw('t0', '0(t3)')
+            gen.new_body_label(newLabel)
             return result
         elif self.operator == "<=":
             # Generando etiquetas
             trueLvl = gen.new_label()
             falseLvl = gen.new_label()
             # Agregando condición
-            gen.add_blez('t1', 't2', trueLvl)
+            gen.add_ble('t1', 't2', trueLvl)
             # Agregando salto
             gen.add_jump(falseLvl)
             # Result
-            result = Value("", False, ExpressionType.BOOLEAN, [], [], [])
+            result = Value(str(temp), False, ExpressionType.BOOLEAN, [], [], [])
             result.truelvl.append(trueLvl)
             result.falselvl.append(falseLvl)
+            # Etiqueta de salida
+            newLabel = gen.new_label()
+            for lvl in result.truelvl:
+                gen.new_body_label(lvl)
+                # Agregando primitivo
+                gen.add_li('t0', str(1))
+                gen.add_li('t3', str(temp))
+                gen.add_sw('t0', '0(t3)')
+                gen.add_jump(newLabel)
+            # Se agregan las etiquetas falsas
+            for lvl in result.falselvl:
+                gen.new_body_label(lvl)
+                # Agregando primitivo
+                gen.add_li('t0', str(0))
+                gen.add_li('t3', str(temp))
+                gen.add_sw('t0', '0(t3)')
+            gen.new_body_label(newLabel)
             return result
         elif self.operator == "==":
             # Generando etiquetas
@@ -120,9 +189,26 @@ class Operation(Expression):
             # Agregando salto
             gen.add_jump(falseLvl)
             # Result
-            result = Value("", False, ExpressionType.BOOLEAN, [], [], [])
+            result = Value(str(temp), False, ExpressionType.BOOLEAN, [], [], [])
             result.truelvl.append(trueLvl)
             result.falselvl.append(falseLvl)
+            # Etiqueta de salida
+            newLabel = gen.new_label()
+            for lvl in result.truelvl:
+                gen.new_body_label(lvl)
+                # Agregando primitivo
+                gen.add_li('t0', str(1))
+                gen.add_li('t3', str(temp))
+                gen.add_sw('t0', '0(t3)')
+                gen.add_jump(newLabel)
+            # Se agregan las etiquetas falsas
+            for lvl in result.falselvl:
+                gen.new_body_label(lvl)
+                # Agregando primitivo
+                gen.add_li('t0', str(0))
+                gen.add_li('t3', str(temp))
+                gen.add_sw('t0', '0(t3)')
+            gen.new_body_label(newLabel)
             return result
         elif self.operator == "!=":
             # Generando etiquetas
@@ -133,9 +219,38 @@ class Operation(Expression):
             # Agregando salto
             gen.add_jump(falseLvl)
             # Result
-            result = Value("", False, ExpressionType.BOOLEAN, [], [], [])
+            result = Value(str(temp), False, ExpressionType.BOOLEAN, [], [], [])
             result.truelvl.append(trueLvl)
             result.falselvl.append(falseLvl)
+            # Etiqueta de salida
+            newLabel = gen.new_label()
+            for lvl in result.truelvl:
+                gen.new_body_label(lvl)
+                # Agregando primitivo
+                gen.add_li('t0', str(1))
+                gen.add_li('t3', str(temp))
+                gen.add_sw('t0', '0(t3)')
+                gen.add_jump(newLabel)
+            # Se agregan las etiquetas falsas
+            for lvl in result.falselvl:
+                gen.new_body_label(lvl)
+                # Agregando primitivo
+                gen.add_li('t0', str(0))
+                gen.add_li('t3', str(temp))
+                gen.add_sw('t0', '0(t3)')
+            gen.new_body_label(newLabel)
             return result
+        
+        # OPERACIONES LOGICAS
+        elif self.operator == "&&":
+            gen.add_operation('and', 't0', 't1', 't2')
+            gen.add_li('t3', str(temp))
+            gen.add_sw('t0', '0(t3)')
+            return  Value(str(temp), True, ExpressionType.BOOLEAN, [], [], [])
+        elif self.operator == "||":
+            gen.add_operation('or', 't0', 't1', 't2')
+            gen.add_li('t3', str(temp))
+            gen.add_sw('t0', '0(t3)')
+            return  Value(str(temp), True, ExpressionType.BOOLEAN, [], [], [])
 
         return None
