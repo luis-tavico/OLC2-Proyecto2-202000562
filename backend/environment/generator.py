@@ -11,6 +11,8 @@ class Generator:
         self.PrintStringFlag = True
         self.ConcatStringFlag = True
         self.BreakLabel = ""
+        self.BreakLabels = []
+        self.ContinueLabels = []
         self.ContinueLabel = ""
         self.MainCode = False
 

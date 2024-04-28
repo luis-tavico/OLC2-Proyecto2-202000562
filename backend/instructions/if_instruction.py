@@ -48,9 +48,15 @@ class If(Instruction):
             gen.new_body_label(lvl)
         # Instrucciones If
         if_env = Environment(env, "IF")
-        statementExecuter(self.if_block, ast, if_env, gen)
-        # Salto etiqueta de salida
-        gen.add_jump(newLabel)
+        jump = statementExecuter(self.if_block, ast, if_env, gen)
+        if jump != None:
+            if jump.type == ExpressionType.BREAK:
+                gen.add_jump(gen.BreakLabels[-1])
+            elif jump.type == ExpressionType.CONTINUE:
+                gen.add_jump(gen.ContinueLabels[-1])
+        else:
+            # Salto etiqueta de salida
+            gen.add_jump(newLabel)
         # Se agregan las etiquetas falsas
         for lvl in result.falselvl:
             gen.new_body_label(lvl)
@@ -88,16 +94,27 @@ class If(Instruction):
                     gen.new_body_label(lvl)
                 # Instrucciones elseif
                 elseif_env = Environment(env, "ELSEIF")
-                statementExecuter(elseif.block, ast, elseif_env, gen)
-                # Salto etiqueta de salida
-                gen.add_jump(newLabel)
+                jump = statementExecuter(elseif.block, ast, elseif_env, gen)
+                if jump != None:
+                    if jump.type == ExpressionType.BREAK:
+                        gen.add_jump(gen.BreakLabels[-1])
+                    elif jump.type == ExpressionType.CONTINUE:
+                        gen.add_jump(gen.ContinueLabels[-1])
+                else:
+                    # Salto etiqueta de salida
+                    gen.add_jump(newLabel)
                 # Se agregan las etiquetas falsas
                 for lvl in result.falselvl:
                     gen.new_body_label(lvl)
         # Validar else
         if self.else_block != None:
             else_env = Environment(env, "ELSE")
-            statementExecuter(self.else_block, ast, else_env, gen)
+            jump = statementExecuter(self.else_block, ast, else_env, gen)
+            if jump != None:
+                if jump.type == ExpressionType.BREAK:
+                    gen.add_jump(gen.BreakLabels[-1])
+                elif jump.type == ExpressionType.CONTINUE:
+                    gen.add_jump(gen.ContinueLabels[-1])
         # Etiqueta de salida
         gen.new_body_label(newLabel)
         return result

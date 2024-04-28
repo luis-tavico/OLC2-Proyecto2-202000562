@@ -6,7 +6,6 @@ from environment.type import ExpressionType
 from expression.access import Access
 from expression.primitive import Primitive
 from expression.operation import Operation
-from expression.ternary import Ternary
 from expression.array import Array
 from expression.array_access import ArrayAccess
 from expression.call import Call
@@ -114,7 +113,6 @@ tokens = [
     'SUBTRACTION',
     'INCREASE',
     'DECREASE',
-    'TERNARY',
     'LEFT_PARENTHESIS',
     'RIGHT_PARENTHESIS',
     'LEFT_SQ_BRACKET',
@@ -146,7 +144,6 @@ t_ADITION = r'\+='
 t_SUBTRACTION = r'-='
 t_INCREASE = r'\+\+'
 t_DECREASE = r'--'
-t_TERNARY = r'\?'
 t_LEFT_PARENTHESIS = r'\('
 t_RIGHT_PARENTHESIS = r'\)'
 t_LEFT_SQ_BRACKET = r'\['
@@ -303,11 +300,6 @@ def p_assignment(t):
                   | ID SUBTRACTION expression SEMICOLON''' 
     params = get_position(t)
     t[0] = Assignment(t[1], t[2], t[3], params.line, params.column)
-
-def p_ternary(t):
-    '''expression : expression TERNARY expression COLON expression'''
-    params = get_position(t)
-    t[0] = Ternary(t[1], t[3], t[5], params.line, params.column)
 
 def p_if(t):
     '''if : IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS LEFT_CURLY_BRACKET block RIGHT_CURLY_BRACKET

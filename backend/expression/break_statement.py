@@ -1,7 +1,7 @@
 from abstract.expression import Expression
 from environment.symbol import Symbol
 from environment.type import ExpressionType
-from errors.error import Error
+from environment.value import Value
 
 class Break(Expression):
     def __init__(self, line, column):
@@ -9,4 +9,5 @@ class Break(Expression):
         self.column = column
 
     def execute(self, ast, env, gen):
-        return None
+        val = Value("", True, ExpressionType.BREAK, [], [], [])
+        return val

@@ -18,6 +18,10 @@ class While(Instruction):
         gen.new_body_label(newLabel)
         # Generando etiqueta false
         falseLvl = gen.new_label()
+        # Guardando etiqueta break
+        gen.BreakLabels.append(falseLvl)
+        # Guardano etiqueta continue
+        gen.ContinueLabels.append(newLabel)
         # Obteniendo la condición
         condition = self.exp.execute(ast, env, gen)
         # Agregando un primitivo booleano
@@ -48,10 +52,18 @@ class While(Instruction):
             gen.new_body_label(lvl)
         # Instrucciones While
         while_env = Environment(env, "WHILE")
-        statementExecuter(self.block, ast, while_env, gen)
-        # Salto etiqueta de retorno
-        gen.add_jump(newLabel)
+        jump = statementExecuter(self.block, ast, while_env, gen)
+        if jump != None:
+            if jump.type == ExpressionType.BREAK:
+                gen.add_jump(gen.BreakLabels[-1])
+            elif jump.type == ExpressionType.CONTINUE:
+                gen.add_jump(gen.ContinueLabels[-1])
+        else:
+            # Salto etiqueta de salida
+            gen.add_jump(newLabel)
         # Se agregan las etiquetas falsas
         for lvl in result.falselvl:
             gen.new_body_label(lvl)
+        gen.BreakLabels.pop()
+        gen.ContinueLabels.pop()
         return None

@@ -51,10 +51,16 @@ class Switch(Instruction):
                 for lvl in result.truelvl:
                     gen.new_body_label(lvl)
                 # Instrucciones If
-                if_env = Environment(env, "CASE")
-                statementExecuter(case.block, ast, if_env, gen)
-                # Salto etiqueta de salida
-                gen.add_jump(newLabel)
+                case_env = Environment(env, "CASE")
+                jump = statementExecuter(case.block, ast, case_env, gen)
+                # Verificar si es un break
+                if jump != None:
+                    if jump.type == ExpressionType.BREAK:
+                        # Salto etiqueta de salida
+                        gen.add_jump(exit)
+                else:
+                    # Salto etiqueta
+                    gen.add_jump(newLabel)
                 # Se agregan las etiquetas falsas
                 for lvl in result.falselvl:
                     gen.new_body_label(lvl)
