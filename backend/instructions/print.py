@@ -10,6 +10,7 @@ class Print(Instruction):
 
     def execute(self, ast, env, gen):
         for exp in self.expression:
+            print(exp)
             val = exp.execute(ast, env, gen)
             if val == None:
                 continue
@@ -68,11 +69,6 @@ class Print(Instruction):
                     gen.add_la('a0', 'str_true')
                     gen.add_li('a7', '4')
                     gen.add_system_call()
-                    # Imprimiendo salto de linea
-                    gen.add_br()
-                    gen.add_li('a0', '10')
-                    gen.add_li('a7', '11')
-                    gen.add_system_call()
                     # Salto etiqueta de salida
                     gen.add_jump(newLabel)
                     # Se agregan las etiquetas falsas
@@ -83,40 +79,54 @@ class Print(Instruction):
                     gen.add_la('a0', 'str_false')
                     gen.add_li('a7', '4')
                     gen.add_system_call()
-                    # Imprimiendo salto de linea
-                    gen.add_br()
-                    gen.add_li('a0', '10')
-                    gen.add_li('a7', '11')
-                    gen.add_system_call()
                     # Etiqueta de salida
                     gen.new_body_label(newLabel)
+            elif (val.type == ExpressionType.ARRAY):
+                gen.add_br()
+                gen.comment('Imprimiendo un arreglo')
+                # Imprimir "["
+                gen.add_la('a0', str("str_l_sq_bt"))
+                gen.add_li('a7', str(4))
+                gen.add_system_call()               
+                gen.add_br()
+                gen.add_la('t0', str(val.value))
+                # Imprimir un espacio entre elementos del arreglo
+                gen.add_br()
+                gen.add_li('a0', '32')
+                gen.add_li('a7', '11')
+                gen.add_system_call()
+                # Inicializando contador
+                gen.add_li('t1', str(0))
+                # Creand etiqueta de ciclo
+                looplbl = gen.new_label()
+                gen.add_br()
+                # Ciclo de impresion
+                gen.new_body_label(looplbl)
+                gen.add_lw('t3', '0(t0)')
+                gen.add_lw('a0', '0(t3)')
+                gen.add_li('a7', str(1))
+                gen.add_system_call()
+                # Imprimir un espacio entre elementos del arreglo
+                gen.add_br()
+                gen.add_li('a0', '32')
+                gen.add_li('a7', '11')
+                gen.add_system_call()
+                # Incrementar el puntero del arreglo
+                gen.add_br()
+                gen.add_operation('addi', 't0', 't0', '4') # El 4 son 4 bytes (tamaño de un entero)
+                # Incrementar el contador
+                gen.add_operation('addi', 't1', 't1', '1')
+                # Condicion
+                gen.add_br()
+                gen.add_lw('t2', str(val.value)+"_length")
+                gen.add_bne('t1', 't2', looplbl)
+                # Imprimir "["
+                gen.add_la('a0', str("str_r_sq_bt"))
+                gen.add_li('a7', str(4))
+                gen.add_system_call()  
         # Imprimiendo salto de linea
         gen.add_br()
         gen.add_li('a0', '10')
         gen.add_li('a7', '11')
         gen.add_system_call()
-        '''
-        if (val.type == ExpressionType.BOOLEAN):
-            gen.new_body_label(newLabel)
-        '''
         return None
-
-    def print_array(self, array):
-        result = ""
-        if isinstance(array, list):
-            result += "[ "
-            for i, sym in enumerate(array):
-                result += self.print_array(sym)
-                if i < len(array) - 1:
-                    result += ", "
-            result += " ]"
-        elif array.data_type == ExpressionType.ARRAY:
-            result += "[ "
-            for i, sym in enumerate(array.value):
-                result += self.print_array(sym)
-                if i < len(array.value) - 1:
-                    result += ", "
-            result += " ]"
-        else:
-            result += str(array.value)
-        return result

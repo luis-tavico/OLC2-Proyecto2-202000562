@@ -111,6 +111,8 @@ class Generator:
         self.Data.insert(0,'.data\n')
         self.variable_data('str_true', 'string', '\"true\"')
         self.variable_data('str_false', 'string', '\"false\"')
+        self.variable_data('str_l_sq_bt', 'string', '\"[\"')
+        self.variable_data('str_r_sq_bt', 'string', '\"]\"')
         self.Code[:0] = self.Data
             
     def add_footers(self):

@@ -10,7 +10,7 @@ class Array(Instruction):
 
     def execute(self, ast, env, gen):
         newArr = []
-        for var in self.list_expression:
-            value = var.execute(ast, env, gen)
+        for expression in self.list_expression:
+            value = expression.execute(ast, env, gen)
             newArr.append(value.value)
         return  Value(newArr, False, ExpressionType.ARRAY, [], [], [])

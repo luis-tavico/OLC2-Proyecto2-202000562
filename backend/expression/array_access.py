@@ -23,12 +23,12 @@ class ArrayAccess(Expression):
         # Traer el arreglo
         sym = env.getVariable(ast, self.array, {'line': self.line, 'column': self.column})
         if(sym.data_type == ExpressionType.NULL):
-            ast.setErrors(Error(type="Semantico", description=f"El arreglo {self.array} no ha sido encontrado", ambit="Global" , line=self.line, column=self.column))
+            ast.setErrors(Error(type="Semantico", description=f"El arreglo {self.array} no ha sido encontrado", ambit=env.id , line=self.line, column=self.column))
             return None
         # Validar tipo principal
         indexVal = self.index.execute(ast, env, gen)
         if indexVal.type != ExpressionType.NUMBER:
-            ast.setErrors(Error(type="Semantico", description="El indice contiene un valor incorrecto", ambit="Global" , line=self.line, column=self.column))
+            ast.setErrors(Error(type="Semantico", description="El indice contiene un valor incorrecto", ambit=env.id , line=self.line, column=self.column))
             return None
         # Agregar llamada
         gen.add_br()
@@ -45,4 +45,4 @@ class ArrayAccess(Expression):
         gen.add_lw('t1', '0(t1)')
 
         gen.add_operation('add', 't2', 't1', 't0')
-        return Value('t2', True, sym.data_type, [], [], [])
+        return Value('t2', True, ExpressionType.NUMBER, [], [], [])
