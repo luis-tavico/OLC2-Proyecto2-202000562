@@ -10,7 +10,6 @@ class Print(Instruction):
 
     def execute(self, ast, env, gen):
         for exp in self.expression:
-            print(exp)
             val = exp.execute(ast, env, gen)
             if val == None:
                 continue
@@ -116,9 +115,15 @@ class Print(Instruction):
                 gen.add_operation('addi', 't0', 't0', '4') # El 4 son 4 bytes (tamaño de un entero)
                 # Incrementar el contador
                 gen.add_operation('addi', 't1', 't1', '1')
+                # obteniendo longitud
+                sym = env.getVariable(ast, val.value+"_length", {'line': self.line, 'column': self.column})
+                # Cargando longitud
+                gen.add_br()
+                gen.comment('Agregando un primitivo numerico')
+                gen.add_li('t4', str(sym.position))
+                gen.add_lw('t2', "0(t4)")
                 # Condicion
                 gen.add_br()
-                gen.add_lw('t2', str(val.value)+"_length")
                 gen.add_bne('t1', 't2', looplbl)
                 # Imprimir "["
                 gen.add_la('a0', str("str_r_sq_bt"))

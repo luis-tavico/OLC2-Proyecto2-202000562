@@ -58,10 +58,7 @@ class For(Instruction):
         for_env = Environment(env, "FOR")
         statementExecuter(self.block, ast, for_env, gen)
         # Ejecutar expresion 2 (incremento/decremento)
-        #variable = self.exp2.execute(ast, env, gen)
-        # Realizar Asignacion
-        assignment = Assignment(self.declaration.id, '=', self.exp2, self.line, self.column)
-        assignment.execute(ast, env, gen)
+        self.exp2.execute(ast, env, gen)
         # Salto etiqueta de retorno
         gen.add_jump(newLabel)
         # Se agregan las etiquetas falsas

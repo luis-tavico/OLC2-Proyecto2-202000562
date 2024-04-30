@@ -15,8 +15,10 @@ class Push(Instruction):
         if(sym.data_type == ExpressionType.NULL):
             ast.setErrors(Error(type="Semantico", description=f"El arreglo {self.array} no ha sido encontrado", ambit=env.id , line=self.line, column=self.column))
             return None
+        ###
+        l = env.getVariable(ast, sym.position+"_length", {'line': self.line, 'column': self.column})
         # Ejecutar expresion
-        exp = self.expression.execute(ast, env, gen)
+        #exp = self.expression.execute(ast, env, gen)
         # Agregar llamada
         gen.add_br()
         gen.comment('Push a un arreglo')
@@ -46,6 +48,7 @@ class Push(Instruction):
         gen.add_la('t4', str(sym.position+'_length'))
         gen.add_sw('t1', '0(t4)')
         '''
+        '''
         gen.add_la('t0', str(sym.position)) 
         gen.add_lw('t1', str(sym.position+'_length'))
         gen.add_move('t2', 't1')
@@ -58,7 +61,19 @@ class Push(Instruction):
         gen.add_operation('addi', 't2', 't2', '1')
         gen.add_la('t4', str(sym.position+'_length'))
         gen.add_sw('t2', '0(t4)')
-
-
-
-
+        '''
+        '''
+        gen.add_li('t0', str(28))
+        gen.add_la('t1', str(sym.position))
+        # 
+        gen.add_li('t6', str(l.position))
+        gen.add_lw('t2', "0(t6)")
+        
+        gen.add_slli('t3', 't2', '2')
+        gen.add_operation('add', 't4', 't1', 't3')
+        gen.add_sw('t0', '0(t4)')
+        # incrementar tamaño
+        gen.add_operation('addi', 't2', 't2', '1')
+        gen.add_la('t5', str(l.position))
+        gen.add_sw('t2', '0(t5)')
+        '''

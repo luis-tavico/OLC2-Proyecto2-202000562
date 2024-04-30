@@ -34,7 +34,8 @@ class Operation(Expression):
                 gen.add_li('t3', str(op2.value)) 
             gen.add_lw('t2', '0(t3)')
 
-        temp = gen.new_temp()
+        if self.operator != "++" and self.operator != "--":
+            temp = gen.new_temp()
 
         # OPERACIONES ARITMETICAS
         if self.operator == "+":
@@ -264,15 +265,15 @@ class Operation(Expression):
         
         # OPERACIONES DE INCREMENTO Y DECREMENTO
         elif self.operator == "++":
-            gen.add_operation('add', 't0', 't1', 't2')
-            gen.add_li('t3', str(temp))
-            gen.add_sw('t0', '0(t3)')
-            return  Value(str(temp), True, ExpressionType.NUMBER, [], [], [])
+            gen.add_operation('addi', 't1', 't1', '1')
+            gen.add_sw('t1', '0(t3)')
+            gen.add_lw('t0', '0(t3)')
+            return  Value(str(op1.value), True, ExpressionType.NUMBER, [], [], [])
         
         elif self.operator == "--":
-            gen.add_operation('sub', 't0', 't1', 't2')
-            gen.add_li('t3', str(temp))
-            gen.add_sw('t0', '0(t3)')
-            return  Value(str(temp), True, ExpressionType.NUMBER, [], [], [])
+            gen.add_operation('addi', 't1', 't1', '-1')
+            gen.add_sw('t1', '0(t3)')
+            gen.add_lw('t0', '0(t3)')
+            return  Value(str(op1.value), True, ExpressionType.NUMBER, [], [], [])
 
         return None

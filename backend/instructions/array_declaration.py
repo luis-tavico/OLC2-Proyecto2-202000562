@@ -20,10 +20,20 @@ class ArrayDeclaration(Instruction):
             return None
         nameId = 'arr_'+str(temp)
         gen.variable_data(nameId, 'word', ', '.join(arrValue.value))
-        nmId = 'arr_'+str(temp)+'_length'
-        gen.variable_data(nmId, 'word', str(len(arrValue.value)))
         # Generar simbolo
         sym = Symbol(symbol_type='VAR', id=self.id, data_type=ExpressionType.ARRAY, position=nameId, line=self.line, column=self.column)
         # Agregar al entorno
         env.saveVariable(ast, self.id, sym)
+        # Almacenar la longitud del array
+        nmId = 'arr_'+str(temp)+'_length'
+        temp = gen.new_temp()
+        gen.add_br()
+        gen.comment('Agregando un primitivo numerico')
+        gen.add_li('t0', str(len(arrValue.value)))
+        gen.add_li('t3', str(temp))
+        gen.add_sw('t0', '0(t3)')
+        # Generar simbolo
+        sym = Symbol(symbol_type='VAR', id=self.id+"_length", data_type=ExpressionType.NUMBER, position=temp, line=self.line, column=self.column)
+        # Agregar al entorno
+        env.saveVariable(ast, nmId, sym)
         return None

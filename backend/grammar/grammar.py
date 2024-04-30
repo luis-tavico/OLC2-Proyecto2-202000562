@@ -26,7 +26,6 @@ from instructions.array_assignment import Arrayassignment
 from instructions.push import Push
 from instructions.pop import Pop
 from instructions.indexof import Indexof
-from instructions.join import Join
 from instructions.length import Length
 from instructions.function import Function
 from instructions.print import Print
@@ -65,7 +64,6 @@ reserved_words = {
     'push': 'PUSH',
     'pop': 'POP',
     'indexOf': 'INDEXOF',
-    'join': 'JOIN',
     'length': 'LENGTH',
     'console': 'CONSOLE',
     'log': 'LOG',
@@ -453,8 +451,6 @@ def p_embedded_functions(t):
             t[0] = Touppercase(t[1], params.line, params.column)
         elif t[3] == "pop":
             t[0] = Pop(t[1], params.line, params.column)
-        elif t[3] == "join":
-            t[0] = Join(t[1], params.line, params.column)
     elif len(t) > 4:
         if t[3] == "push":
             t[0] = Push(t[1], t[4], params.line, params.column)
@@ -473,7 +469,6 @@ def p_name_method(t):
                    | PUSH
                    | POP
                    | INDEXOF
-                   | JOIN
                    | LENGTH'''
     t[0] = t[1]
 
@@ -545,8 +540,7 @@ def p_expression_unary(t):
         one = Primitive(1, ExpressionType.NUMBER, params.line, params.column)
         t[0] = Operation(t[2], t[1], one, params.line, params.column)
     elif t[2] == '--' or t[2] == '++':
-        one = Primitive(1, ExpressionType.NUMBER, params.line, params.column)
-        t[0] = Operation(t[1], t[2], one, params.line, params.column)
+        t[0] = Operation(t[1], t[2], None, params.line, params.column)
 
 def p_expression_binary(t):
     '''expression_binary : arithmetic
