@@ -25,7 +25,10 @@ class Declaration(Instruction):
         if self.data_type == None:
             self.data_type = result.type
         # Generar simbolo
-        sym = Symbol(symbol_type=self.symbol_type, id=self.id, data_type=self.data_type, position=result.value, line=self.line, column=self.column)
+        if (isinstance(self.expression, Primitive)):
+            sym = Symbol(symbol_type=self.symbol_type, id=self.id, data_type=self.data_type, position=result.value, value=self.expression.value, line=self.line, column=self.column)
+        else:
+            sym = Symbol(symbol_type=self.symbol_type, id=self.id, data_type=self.data_type, position=result.value, value=None, line=self.line, column=self.column)
         # Validar tipo
         if result.type != self.data_type:
             ast.setErrors(Error(type="Semantico", description="Los tipos de dato son incorrectos.", ambit="Global" , line=self.line, column=self.column))

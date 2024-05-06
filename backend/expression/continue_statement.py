@@ -1,5 +1,4 @@
 from abstract.expression import Expression
-from environment.symbol import Symbol
 from environment.type import ExpressionType
 from environment.value import Value
 

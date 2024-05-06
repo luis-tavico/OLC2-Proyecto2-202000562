@@ -23,7 +23,17 @@ class Generator:
         self.add_headers()
         self.add_footers()
         outstring = "".join(self.Code)
+        outstring += "".join(self.FuncCode)
         return outstring
+    
+    def add_functions_code(self, code):
+        self.FuncCode += code
+
+    def call_function(self, name):
+        self.Code.append(f"\tjal ra, {name}\n")
+
+    def add_end_function(self):
+        self.Code.append("\tret\n")
 
     def get_temps(self):
         return self.TempList
@@ -106,9 +116,15 @@ class Generator:
     def add_system_call(self):
         self.Code.append('\tecall\n')
 
+    def add_function(self, name):
+        self.Code.append(f"\n{name}:\n")
+
     def add_headers(self):
         self.Code.insert(0,'\n.text\n.globl _start\n\n_start:\n')
         self.Data.insert(0,'.data\n')
+        self.variable_data('str_number', 'string', '\"number\"')
+        self.variable_data('str_string', 'string', '\"string\"')
+        self.variable_data('str_boolean', 'string', '\"boolean\"')
         self.variable_data('str_true', 'string', '\"true\"')
         self.variable_data('str_false', 'string', '\"false\"')
         self.variable_data('str_l_sq_bt', 'string', '\"[\"')

@@ -99,21 +99,11 @@ export class MainComponent implements OnInit {
         var r = response as any;
         this.errors = r.errors;
         this.symbols = r.symbols;
-        if (r.errors.length == 0) {
-          this.linesOutputConsole = r.console.split('\n');
-          this.outputConsole.nativeElement.value = r.console;
-          this.outputConsoleContent = r.console;
-          this.outputConsole.nativeElement.style.height = 'auto';
-          this.outputConsole.nativeElement.style.height = this.outputConsole.nativeElement.scrollHeight + 'px';
-        } else {
-          let e: string = "#=== Codigo ejecutado con errores. ===";
-          this.linesOutputConsole = e.split('\n');
-          this.outputConsole.nativeElement.value = e;
-          this.outputConsoleContent = e;
-          this.outputConsole.nativeElement.style.height = 'auto';
-          this.outputConsole.nativeElement.style.height = this.outputConsole.nativeElement.scrollHeight + 'px';
-        }
-
+        this.linesOutputConsole = r.console.split('\n');
+        this.outputConsole.nativeElement.value = r.console;
+        this.outputConsoleContent = r.console;
+        this.outputConsole.nativeElement.style.height = 'auto';
+        this.outputConsole.nativeElement.style.height = this.outputConsole.nativeElement.scrollHeight + 'px';
       },
       (error) => {
         console.error('Error:', error);

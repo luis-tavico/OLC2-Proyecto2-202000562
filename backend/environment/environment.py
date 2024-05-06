@@ -9,6 +9,7 @@ class Environment():
         self.tabla = {}
         self.interfaces = {}
         self.functions = {}
+        self.funcs = {}
 
     def saveVariable(self, ast, id, symbol):
         if id in self.tabla:
@@ -26,7 +27,7 @@ class Environment():
             else:
                 tmpEnv = tmpEnv.previous
         ast.setErrors(Error(type="Semantico", description=f"La variable {id} no existe", ambit="Global" , line=position['line'], column=position['column']))
-        return Symbol(symbol_type='', id='', data_type=ExpressionType.NULL, position='', line=position['line'], column=position['column'])
+        return Symbol(symbol_type='', id='', data_type=ExpressionType.NULL, position='', value=None, line=position['line'], column=position['column'])
 
     def setVariable(self, ast, id, symbol):
         tmpEnv = self
@@ -40,7 +41,7 @@ class Environment():
                 tmpEnv = tmpEnv.previous
         #ast.setErrors(f"La variable {id} no existe.")
         ast.setErrors(Error(type="Semantico", description=f"La variable {id} no existe", ambit="Global" , line=symbol.line, column=symbol.column))
-        return Symbol(symbol_type='', id='', data_type=ExpressionType.NULL, position='', line=symbol.line, column=symbol.column)
+        return Symbol(symbol_type='', id='', data_type=ExpressionType.NULL, position='', value=None, line=symbol.line, column=symbol.column)
 
 
     def saveFunction(self, ast, id, function):

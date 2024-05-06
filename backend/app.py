@@ -12,8 +12,7 @@ CORS(app)
 @app.route("/run", methods=["POST"])
 def run():
     code = request.get_json()['code']
-    print(code)
-    symbols = {}
+    symbols = []
     errors = []
 
     ast = Ast()
@@ -28,7 +27,15 @@ def run():
     errors.extend(ast.getErrors())
     errors_json = [error.__dict__ for error in errors]
 
-    return jsonify({"console":gen.get_final_code()+"\n# === Codigo ejecutado exitosamente. ===","errors": errors_json})
+    for id, sym in env.tabla.items():
+        symbols.append(sym)
+
+    symbols_json = []
+
+    for sym in symbols:
+        symbols_json.append({"symbol_type":sym.symbol_type, "id":sym.id, "data_type":sym.data_type.name.lower(), "environment":"Global", "line":sym.line, "column":sym.column})
+
+    return jsonify({"console":gen.get_final_code()+"\n# >>>Fin de codigo.","symbols":symbols_json,"errors":errors_json})
 
 if __name__ == '__main__':
     app.run(debug=True)

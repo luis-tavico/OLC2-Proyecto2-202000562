@@ -44,6 +44,7 @@ class Operation(Expression):
             gen.add_sw('t0', '0(t3)')
             return  Value(str(temp), True, ExpressionType.NUMBER, [], [], [])
         elif self.operator == "-":
+            gen.comment('Resta calificacion')
             gen.add_operation('sub', 't0', 't1', 't2')
             gen.add_li('t3', str(temp))
             gen.add_sw('t0', '0(t3)')

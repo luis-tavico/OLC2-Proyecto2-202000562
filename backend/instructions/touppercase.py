@@ -1,7 +1,7 @@
 from abstract.instruction import Instruction
 from environment.type import ExpressionType
-from environment.symbol import Symbol
-from errors.error import Error
+from expression.access import Access
+from environment.value import Value
 
 class Touppercase(Instruction):
     def __init__(self, expression, line, column):
@@ -10,4 +10,11 @@ class Touppercase(Instruction):
         self.column = column
 
     def execute(self, ast, env, gen):
-        return None
+        if (isinstance(self.expression, Access)):
+            sym = env.getVariable(ast, self.expression.id, {'line': self.line, 'column': self.column})
+            temp = gen.new_temp()
+            nameId = 'str_'+str(temp)
+            gen.variable_data(nameId, 'string', '\"'+str(sym.value.upper())+'\"')
+            return Value(nameId, False, sym.data_type, [], [], [])
+
+        return Value("", False, ExpressionType.NULL, [], [], [])

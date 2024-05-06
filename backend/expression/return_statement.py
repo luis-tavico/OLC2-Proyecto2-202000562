@@ -1,7 +1,6 @@
 from abstract.expression import Expression
-from environment.symbol import Symbol
 from environment.type import ExpressionType
-from errors.error import Error
+from environment.value import Value
 
 class Return(Expression):
     def __init__(self, exp, line, column):
@@ -10,4 +9,7 @@ class Return(Expression):
         self.exp = exp
 
     def execute(self, ast, env, gen):
-        return None
+        # Ejecutar expresion
+        result = self.exp.execute(ast, env, gen)
+        val = Value(result.value, True, ExpressionType.RETURN, [], [], [])
+        return val

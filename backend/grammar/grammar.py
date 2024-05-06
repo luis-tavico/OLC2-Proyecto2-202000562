@@ -203,6 +203,12 @@ def t_BOOL(t):
         print("Error al convertir booleano %d", t.value)
         t.value = Primitive(None, ExpressionType.NULL, t.lexer.lineno, find_column(t))
     return t
+
+def t_NULL(t):
+    r'null'
+    nullValue = str(t.value)
+    t.value = Primitive("null", ExpressionType.STRING, t.lexer.lineno, find_column(t))
+    return t
     
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'

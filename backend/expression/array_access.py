@@ -3,15 +3,6 @@ from environment.type import ExpressionType
 from environment.value import Value
 from errors.error import Error
 
-'''
-class ArrayAccess(Expression):
-    def __init__(self, array, indexes, line, column):
-        self.array = array
-        self.indexes = indexes
-        self.line = line
-        self.column = column
-'''
-
 class ArrayAccess(Expression):
     def __init__(self, array, index, line, column):
         self.array = array

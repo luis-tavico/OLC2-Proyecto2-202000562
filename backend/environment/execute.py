@@ -8,6 +8,6 @@ def statementExecuter(instructions, ast, env, gen):
     for instruction in instructions:
         res = instruction.execute(ast, env, gen)
         if res != None:
-            if res.type == ExpressionType.BREAK or res.type == ExpressionType.CONTINUE:
+            if res.type == ExpressionType.BREAK or res.type == ExpressionType.CONTINUE or res.type == ExpressionType.RETURN:
                 return res
     return None
